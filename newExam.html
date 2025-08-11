@@ -254,17 +254,12 @@ function parseCSV(text) {
 
 // دالة لاختيار N عناصر عشوائية من مصفوفة
 function getRandomItems(arr, n) {
-    const result = [];
-    const taken = new Set();
-
-    while (result.length < n && result.length < arr.length) {
-        const index = Math.floor(Math.random() * arr.length);
-        if (!taken.has(index)) {
-            taken.add(index);
-            result.push(arr[index]);
-        }
-    }
-    return result;
+  let shuffled = arr.slice();
+  for (let i = shuffled.length -1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, n);
 }
 
 // تحميل الأسئلة
@@ -369,9 +364,36 @@ document.getElementById('student-form').addEventListener('submit', async functio
     });
 });
 
+// حساب النتيجة عند انهاء الامتحان
+document.getElementById('exam-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    let score = 0;
+    const total = currentQuestions.length;
+
+    currentQuestions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+        if (selected) {
+            const answer = parseInt(selected.value);
+            if (answer === q.correctAnswer) {
+                score++;
+            }
+        }
+    });
+
+    document.getElementById('exam-section').classList.add('hidden');
+
+    document.getElementById('student-score').textContent = `${score} / ${total}`;
+    const percent = total === 0 ? 0 : Math.round((score / total) * 100);
+    document.getElementById('student-percentage').textContent = `${percent}%`;
+
+    document.getElementById('results-section').classList.remove('hidden');
+});
+
 </script>
 
 </body>
 </html>
+
 
 
