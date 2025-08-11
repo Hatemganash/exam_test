@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>نظام الامتحانات الإلكتروني</title>
 <style>
+    /* (نفس ستايلك بدون تغيير) */
     :root {
         --primary-color: #3498db;
         --secondary-color: #2980b9;
@@ -174,7 +175,6 @@
                     <option value="">اختر الدورة</option>
                     <option value="networks">شبكات</option>
                     <option value="HR">موارد بشرية</option>
-                    <!-- ممكن تضيف مواد أخرى -->
                 </select>
             </div>
 
@@ -200,8 +200,6 @@
         <p>تم الانتهاء من الامتحان بنجاح</p>
         <div class="score" id="student-score">0 / 0</div>
         <p id="student-percentage">0%</p>
-     <!--   <button id="new-exam">امتحان جديد</button> 
-        <button id="download-results">تحميل النتائج (للمشرف)</button> -->
     </div>
 </div>
 <script>
@@ -209,11 +207,11 @@ const sheetLinks = {
     networks: {
         1: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=0&single=true&output=csv",
         2: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=1194456190&single=true&output=csv",
-        3: "" // أضف الرابط المناسب
+        3: ""
     },
     HR: {
-        1: "", // أضف الرابط المناسب
-        2: ""  // أضف الرابط المناسب
+        1: "",
+        2: ""
     }
 };
 
@@ -279,7 +277,7 @@ async function loadQuestions(course, level) {
         }
         const csvText = await response.text();
         const rows = parseCSV(csvText);
-        rows.shift(); // إزالة رأس الجدول
+        rows.shift();
 
         shuffleArray(rows);
         const selectedRows = rows.slice(0, 10);
@@ -364,12 +362,6 @@ document.getElementById('student-form').addEventListener('submit', async functio
     });
 });
 
-function reloadToStartNewExam() {
-    setTimeout(() => {
-        window.location.href = window.location.pathname;
-    }, 5000);
-}
-
 document.getElementById('exam-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -394,19 +386,16 @@ document.getElementById('exam-form').addEventListener('submit', function(event) 
 
     document.getElementById('results-section').classList.remove('hidden');
 
-    reloadToStartNewExam();
+    // بعد 20 ثانية يرجع للفورم ويهيأ الصفحة
+    setTimeout(() => {
+        document.getElementById('results-section').classList.add('hidden');
+        document.getElementById('registration-form').classList.remove('hidden');
+        document.getElementById('exam-section').classList.add('hidden');
+        currentQuestions = [];
+        document.getElementById('student-form').reset();
+        document.getElementById('questions-container').innerHTML = '';
+    }, 20000);
 });
-
-
-
 </script>
-
 </body>
 </html>
-
-
-
-
-
-
-
