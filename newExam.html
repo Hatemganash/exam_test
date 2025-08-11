@@ -257,7 +257,6 @@ function parseCSV(text) {
     return rows;
 }
 
-// خلط الأسئلة (Fisher-Yates)
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -365,6 +364,12 @@ document.getElementById('student-form').addEventListener('submit', async functio
     });
 });
 
+function reloadToStartNewExam() {
+    setTimeout(() => {
+        window.location.href = window.location.pathname;
+    }, 20000);
+}
+
 document.getElementById('exam-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -388,6 +393,8 @@ document.getElementById('exam-form').addEventListener('submit', function(event) 
     document.getElementById('student-percentage').textContent = `${percent}%`;
 
     document.getElementById('results-section').classList.remove('hidden');
+
+    reloadToStartNewExam();
 });
 
 
@@ -396,6 +403,7 @@ document.getElementById('exam-form').addEventListener('submit', function(event) 
 
 </body>
 </html>
+
 
 
 
