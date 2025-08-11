@@ -149,8 +149,8 @@
             </div>
 
             <div class="form-group">
-                <label for="student-id">رقم الهويه:</label>
-                <input type="text" id="student-id" required />
+                <label for="student-id">رقم الهوية:</label>
+                <input type="text" id="student-id" inputmode="numeric" pattern="[0-9]*" required />
             </div>
 
             <div class="form-group">
@@ -200,8 +200,8 @@
         <p>تم الانتهاء من الامتحان بنجاح</p>
         <div class="score" id="student-score">0 / 0</div>
         <p id="student-percentage">0%</p>
-      <!--  <button id="new-exam">امتحان جديد</button>
-        <button id="download-results">تحميل النتائج (للمشرف)</button> -->
+        <button id="new-exam">امتحان جديد</button>
+        <button id="download-results">تحميل النتائج (للمشرف)</button>
     </div>
 </div>
 <script>
@@ -412,9 +412,38 @@ document.getElementById('new-exam').addEventListener('click', () => {
     document.getElementById('questions-container').innerHTML = '';
     currentQuestions = [];
 });
+
+// تحويل الأرقام العربية (الهندية) إلى أرقام إنجليزية تلقائيًا في حقل رقم الهوية
+const arabicToEnglishDigitsMap = {
+  '٠': '0',
+  '١': '1',
+  '٢': '2',
+  '٣': '3',
+  '٤': '4',
+  '٥': '5',
+  '٦': '6',
+  '٧': '7',
+  '٨': '8',
+  '٩': '9'
+};
+
+const idInput = document.getElementById('student-id');
+
+idInput.addEventListener('input', () => {
+  let value = idInput.value;
+  let newValue = '';
+  for (let char of value) {
+    if (arabicToEnglishDigitsMap[char]) {
+      newValue += arabicToEnglishDigitsMap[char];
+    } else {
+      newValue += char;
+    }
+  }
+  if (newValue !== value) {
+    idInput.value = newValue;
+  }
+});
 </script>
 
 </body>
 </html>
-
-
