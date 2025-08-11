@@ -205,20 +205,18 @@
     </div>
 </div>
 <script>
-// روابط Google Sheets - لازم تكون بصيغة Publish to web (CSV)
 const sheetLinks = {
     networks: {
         1: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=0&single=true&output=csv",
         2: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=1194456190&single=true&output=csv",
-        3: "" // أضف رابط المستوى الثالث
+        3: "" // أضف الرابط المناسب
     },
     HR: {
-        1: "", // أضف رابط المستوى الأول
-        2: ""  // أضف رابط المستوى الثاني
+        1: "", // أضف الرابط المناسب
+        2: ""  // أضف الرابط المناسب
     }
 };
 
-// دالة لقراءة CSV حتى لو فيه نصوص بين " "
 function parseCSV(text) {
     const rows = [];
     let currentRow = [];
@@ -237,32 +235,36 @@ function parseCSV(text) {
         } else if (char === ',' && !insideQuotes) {
             currentRow.push(currentValue);
             currentValue = '';
-        } else if (char === '\n' && !insideQuotes) {
-            currentRow.push(currentValue);
-            rows.push(currentRow);
-            currentRow = [];
-            currentValue = '';
+        } else if ((char === '\n' || char === '\r') && !insideQuotes) {
+            if (currentValue || currentValue === '') {
+                currentRow.push(currentValue);
+                currentValue = '';
+            }
+            if (currentRow.length > 0) {
+                rows.push(currentRow);
+                currentRow = [];
+            }
         } else {
             currentValue += char;
         }
     }
-    currentRow.push(currentValue);
-    rows.push(currentRow);
-
+    if (currentValue || currentValue === '') {
+        currentRow.push(currentValue);
+    }
+    if (currentRow.length > 0) {
+        rows.push(currentRow);
+    }
     return rows;
 }
 
-// دالة لاختيار N عناصر عشوائية من مصفوفة
-function getRandomItems(arr, n) {
-  let shuffled = arr.slice();
-  for (let i = shuffled.length -1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled.slice(0, n);
+// خلط الأسئلة (Fisher-Yates)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
-// تحميل الأسئلة
 async function loadQuestions(course, level) {
     const sheetUrl = sheetLinks[course]?.[level];
     if (!sheetUrl) {
@@ -278,29 +280,29 @@ async function loadQuestions(course, level) {
         }
         const csvText = await response.text();
         const rows = parseCSV(csvText);
-
         rows.shift(); // إزالة رأس الجدول
 
-        return rows.map(row => ({
+        shuffleArray(rows);
+        const selectedRows = rows.slice(0, 10);
+
+        return selectedRows.map(row => ({
             question: row[0] || "",
             options: [row[1] || "", row[2] || "", row[3] || "", row[4] || ""],
             correctAnswer: parseInt(row[5] || "0")
         }));
     } catch (error) {
         console.error(error);
-        alert("❌ لم يتم تحميل الأسئلة - تحقق من أن الملف منشور كـ CSV ومتاح للجميع.\nقد تكون المشكلة من CORS.");
+        alert("❌ لم يتم تحميل الأسئلة - تحقق من أن الملف منشور كـ CSV ومتاح للجميع.");
         return [];
     }
 }
 
-// دالة فحص النص العربي
 function isArabic(text) {
     return /[\u0600-\u06FF]/.test(text);
 }
 
 let currentQuestions = [];
 
-// بدء الامتحان
 document.getElementById('student-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -309,11 +311,10 @@ document.getElementById('student-form').addEventListener('submit', async functio
     const level = document.getElementById('level').value;
     const course = document.getElementById('course').value;
 
-    let allQuestions = await loadQuestions(course, level);
+    const allQuestions = await loadQuestions(course, level);
     if (allQuestions.length === 0) return;
 
-    // اختيار 10 أسئلة عشوائية فقط
-    currentQuestions = getRandomItems(allQuestions, 10);
+    currentQuestions = allQuestions;
 
     document.getElementById('exam-student-name').textContent = studentName;
     document.getElementById('exam-student-id').textContent = studentId;
@@ -364,7 +365,6 @@ document.getElementById('student-form').addEventListener('submit', async functio
     });
 });
 
-// حساب النتيجة عند انهاء الامتحان
 document.getElementById('exam-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -390,10 +390,13 @@ document.getElementById('exam-form').addEventListener('submit', function(event) 
     document.getElementById('results-section').classList.remove('hidden');
 });
 
+
+
 </script>
 
 </body>
 </html>
+
 
 
 
