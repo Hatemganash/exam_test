@@ -279,8 +279,11 @@ async function loadQuestions(course, level) {
             return [];
         }
         const csvText = await response.text();
-        const rows = parseCSV(csvText);
+        let rows = parseCSV(csvText);
         rows.shift(); // إزالة رأس الجدول
+
+        // حذف الأسئلة الفارغة
+        rows = rows.filter(row => row[0] && row[0].trim() !== "");
 
         shuffleArray(rows);
         const selectedRows = rows.slice(0, 10);
@@ -388,14 +391,28 @@ document.getElementById('exam-form').addEventListener('submit', function(event) 
     document.getElementById('student-percentage').textContent = `${percent}%`;
 
     document.getElementById('results-section').classList.remove('hidden');
+
+    // إعادة نموذج التسجيل تلقائيًا بعد 10 ثواني
+    setTimeout(() => {
+        document.getElementById('results-section').classList.add('hidden');
+        document.getElementById('registration-form').classList.remove('hidden');
+
+        document.getElementById('student-form').reset();
+        document.getElementById('questions-container').innerHTML = '';
+        currentQuestions = [];
+    }, 10000);
 });
 
+// زر "امتحان جديد" يعيد للنموذج فورًا لو ضغط عليه
+document.getElementById('new-exam').addEventListener('click', () => {
+    document.getElementById('results-section').classList.add('hidden');
+    document.getElementById('registration-form').classList.remove('hidden');
 
-
+    document.getElementById('student-form').reset();
+    document.getElementById('questions-container').innerHTML = '';
+    currentQuestions = [];
+});
 </script>
 
 </body>
 </html>
-
-
-
