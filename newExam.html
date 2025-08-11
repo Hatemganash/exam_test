@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>نظام الامتحانات الإلكتروني</title>
+<style>
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2980b9;
+        --success-color: #2ecc71;
+        --danger-color: #e74c3c;
+        --light-color: #ecf0f1;
+        --dark-color: #34495e;
+    }
+    * {
+        box-sizing: border-box;
+        margin: 0; padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+        background-color: #f5f5f5;
+        color: #333;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    header {
+        background-color: var(--dark-color);
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        margin-bottom: 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    header h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    .card {
+        background-color: white;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+    button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    button:hover {
+        background-color: var(--secondary-color);
+    }
+    .question {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+    .question-text {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .options {
+        margin-left: 20px;
+    }
+    .option {
+        display: block;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background-color: #fff;
+    }
+    .option:hover {
+        border-color: var(--primary-color);
+    }
+    .option.selected {
+        border-color: var(--primary-color);
+        background-color: rgba(52, 152, 219, 0.1);
+        font-weight: bold;
+    }
+    .option input[type="radio"] {
+        display: none;
+    }
+    .result-card {
+        text-align: center;
+        padding: 30px;
+    }
+    .score {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 20px 0;
+        color: var(--primary-color);
+    }
+    .hidden {
+        display: none;
+    }
+    @media (max-width: 600px) {
+        .container {
+            padding: 10px;
+        }
+        header h1 {
+            font-size: 20px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>نظام الامتحانات الإلكتروني</h1>
+        <p>معهد الفضيلة العالي للتدريب</p>
+    </header>
+
+    <!-- Student Registration Form -->
+    <div class="card" id="registration-form">
+        <h2>تسجيل بيانات الطالب</h2>
+        <form id="student-form">
+            <div class="form-group">
+                <label for="student-name">اسم الطالب:</label>
+                <input type="text" id="student-name" required />
+            </div>
+
+            <div class="form-group">
+                <label for="student-id">الرقم الأكاديمي:</label>
+                <input type="text" id="student-id" required />
+            </div>
+
+            <div class="form-group">
+                <label for="level">المستوى:</label>
+                <select id="level" required>
+                    <option value="">اختر المستوى</option>
+                    <option value="1">المستوى الأول</option>
+                    <option value="2">المستوى الثاني</option>
+                    <option value="3">المستوى الثالث</option>
+                    <option value="4">المستوى الرابع</option>
+                    <option value="5">المستوى الخامس</option>
+                    <option value="6">المستوى السادس</option>
+                    <option value="7">المستوى السابع</option>
+                    <option value="8">المستوى الثامن</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="course">الدورة:</label>
+                <select id="course" required>
+                    <option value="">اختر الدورة</option>
+                    <option value="networks">شبكات</option>
+                    <option value="HR">موارد بشرية</option>
+                    <!-- ممكن تضيف مواد أخرى -->
+                </select>
+            </div>
+
+            <button type="submit">بدء الامتحان</button>
+        </form>
+    </div>
+
+    <!-- Exam Section -->
+    <div class="card hidden" id="exam-section">
+        <h2 id="exam-title">امتحان المستوى: <span id="current-level"></span> - <span id="current-course"></span></h2>
+        <p>الطالب: <span id="exam-student-name"></span> (<span id="exam-student-id"></span>)</p>
+
+        <form id="exam-form">
+            <div id="questions-container"></div>
+
+            <button type="submit">إنهاء الامتحان</button>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div class="card result-card hidden" id="results-section">
+        <h2>نتيجة الامتحان</h2>
+        <p>تم الانتهاء من الامتحان بنجاح</p>
+        <div class="score" id="student-score">0 / 0</div>
+        <p id="student-percentage">0%</p>
+        <button id="new-exam">امتحان جديد</button>
+        <button id="download-results">تحميل النتائج (للمشرف)</button>
+    </div>
+</div>
+<script>
+// روابط Google Sheets - لازم تكون بصيغة Publish to web (CSV)
+const sheetLinks = {
+    networks: {
+        1: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=0&single=true&output=csv",
+        2: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=1194456190&single=true&output=csv",
+        3: "" // أضف رابط المستوى الثالث
+    },
+    HR: {
+        1: "", // أضف رابط المستوى الأول
+        2: ""  // أضف رابط المستوى الثاني
+    }
+};
+
+// دالة لقراءة CSV حتى لو فيه نصوص بين " "
+function parseCSV(text) {
+    const rows = [];
+    let currentRow = [];
+    let currentValue = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"' && insideQuotes && nextChar === '"') {
+            currentValue += '"';
+            i++;
+        } else if (char === '"') {
+            insideQuotes = !insideQuotes;
+        } else if (char === ',' && !insideQuotes) {
+            currentRow.push(currentValue);
+            currentValue = '';
+        } else if (char === '\n' && !insideQuotes) {
+            currentRow.push(currentValue);
+            rows.push(currentRow);
+            currentRow = [];
+            currentValue = '';
+        } else {
+            currentValue += char;
+        }
+    }
+    currentRow.push(currentValue);
+    rows.push(currentRow);
+
+    return rows;
+}
+
+// تحميل الأسئلة
+async function loadQuestions(course, level) {
+    const sheetUrl = sheetLinks[course]?.[level];
+    if (!sheetUrl) {
+        alert("⚠ لا يوجد رابط لهذا الكورس والمستوى.");
+        return [];
+    }
+
+    try {
+        const response = await fetch(sheetUrl);
+        if (!response.ok) {
+            alert(`❌ فشل التحميل - كود الخطأ: ${response.status}`);
+            return [];
+        }
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+
+        rows.shift(); // إزالة رأس الجدول
+
+        return rows.map(row => ({
+            question: row[0] || "",
+            options: [row[1] || "", row[2] || "", row[3] || "", row[4] || ""],
+            correctAnswer: parseInt(row[5] || "0")
+        }));
+    } catch (error) {
+        console.error(error);
+        alert("❌ لم يتم تحميل الأسئلة - تحقق من أن الملف منشور كـ CSV ومتاح للجميع.\nقد تكون المشكلة من CORS.");
+        return [];
+    }
+}
+
+// دالة فحص النص العربي
+function isArabic(text) {
+    return /[\u0600-\u06FF]/.test(text);
+}
+
+let currentQuestions = [];
+
+// بدء الامتحان
+document.getElementById('student-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const studentName = document.getElementById('student-name').value;
+    const studentId = document.getElementById('student-id').value;
+    const level = document.getElementById('level').value;
+    const course = document.getElementById('course').value;
+
+    currentQuestions = await loadQuestions(course, level);
+    if (currentQuestions.length === 0) return;
+
+    document.getElementById('exam-student-name').textContent = studentName;
+    document.getElementById('exam-student-id').textContent = studentId;
+    document.getElementById('current-level').textContent = level;
+    document.getElementById('current-course').textContent = document.querySelector(`#course option[value="${course}"]`).textContent;
+
+    document.getElementById('registration-form').classList.add('hidden');
+    document.getElementById('exam-section').classList.remove('hidden');
+
+    const container = document.getElementById('questions-container');
+    container.innerHTML = '';
+
+    currentQuestions.forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+
+        const questionText = document.createElement('div');
+        questionText.className = 'question-text';
+        questionText.textContent = `${index + 1}. ${q.question}`;
+        questionText.dir = isArabic(q.question) ? 'rtl' : 'ltr';
+        questionDiv.appendChild(questionText);
+
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+
+        q.options.forEach((option, optIndex) => {
+            const optionLabel = document.createElement('label');
+            optionLabel.className = 'option';
+            optionLabel.setAttribute('dir', isArabic(option) ? 'rtl' : 'ltr');
+
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = `question-${index}`;
+            radio.value = optIndex;
+
+            radio.addEventListener('change', () => {
+                optionsDiv.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                optionLabel.classList.add('selected');
+            });
+
+            optionLabel.appendChild(radio);
+            optionLabel.append(` ${option}`);
+            optionsDiv.appendChild(optionLabel);
+        });
+
+        questionDiv.appendChild(optionsDiv);
+        container.appendChild(questionDiv);
+    });
+});
+</script>
+
+</body>
+</html>
