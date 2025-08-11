@@ -252,6 +252,21 @@ function parseCSV(text) {
     return rows;
 }
 
+// دالة لاختيار N عناصر عشوائية من مصفوفة
+function getRandomItems(arr, n) {
+    const result = [];
+    const taken = new Set();
+
+    while (result.length < n && result.length < arr.length) {
+        const index = Math.floor(Math.random() * arr.length);
+        if (!taken.has(index)) {
+            taken.add(index);
+            result.push(arr[index]);
+        }
+    }
+    return result;
+}
+
 // تحميل الأسئلة
 async function loadQuestions(course, level) {
     const sheetUrl = sheetLinks[course]?.[level];
@@ -299,8 +314,11 @@ document.getElementById('student-form').addEventListener('submit', async functio
     const level = document.getElementById('level').value;
     const course = document.getElementById('course').value;
 
-    currentQuestions = await loadQuestions(course, level);
-    if (currentQuestions.length === 0) return;
+    let allQuestions = await loadQuestions(course, level);
+    if (allQuestions.length === 0) return;
+
+    // اختيار 10 أسئلة عشوائية فقط
+    currentQuestions = getRandomItems(allQuestions, 10);
 
     document.getElementById('exam-student-name').textContent = studentName;
     document.getElementById('exam-student-id').textContent = studentId;
@@ -350,8 +368,10 @@ document.getElementById('student-form').addEventListener('submit', async functio
         container.appendChild(questionDiv);
     });
 });
+
 </script>
 
 </body>
 </html>
+
 
