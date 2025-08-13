@@ -130,34 +130,7 @@
             font-size: 20px;
         }
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f5f5f5; color: #333; line-height: 1.6; }
-    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-    header { background-color: var(--dark-color); color: white; padding: 20px 0; text-align: center; margin-bottom: 30px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    header h1 { font-size: 24px; margin-bottom: 10px; }
-    .card { background-color: white; border-radius: 5px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; }
-    input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; }
-    button { background-color: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
-    button:hover { background-color: var(--secondary-color); }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .question { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
-    .question-text { font-weight: bold; margin-bottom: 10px; }
-    .options { margin-left: 20px; }
-    .option { display: block; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s ease; background-color: #fff; }
-    .option:hover { border-color: var(--primary-color); }
-    .option.selected { border-color: var(--primary-color); background-color: rgba(52, 152, 219, 0.1); font-weight: bold; }
-    .option input[type="radio"] { display: none; }
-    .muted { color: #777; font-size: 14px; }
-    .result-card { text-align: center; padding: 30px; }
-    .score { font-size: 24px; font-weight: bold; margin: 20px 0; color: var(--primary-color); }
-    .hidden { display: none; }
-    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-    th, td { border: 1px solid #eee; padding: 10px; text-align: center; }
-    th { background: #f9fbfc; }
-    .flex-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-    @media (max-width: 700px) { .row { grid-template-columns: 1fr; } }
+ 
 </style>
 </head>
 <body>
@@ -177,11 +150,11 @@
                 <input type="text" id="student-name" required />
             </div>
 
-            <div class="form-group">
-                <label for="student-id">رقم الهوية:</label>
-                <input type="text" id="student-id" inputmode="numeric" pattern="[0-9]*" required />
-            </div>
-
+   <div class="form-group">
+                    <label for="student-id">رقم الهوية:</label>
+                    <input type="text" id="student-id" required />
+                    <div class="muted">يُقبل أرقام إنجليزية فقط (سيتم تحويل الأرقام العربية تلقائيًا).</div>
+                </div>
             <div class="form-group">
                 <label for="level">المستوى:</label>
                 <select id="level" required>
@@ -195,17 +168,9 @@
                     <option value="7">المستوى السابع</option>
                     <option value="8">المستوى الثامن</option>
                 </select>
-            <div class="row">
-                <div class="form-group">
-                    <label for="student-name">اسم الطالب:</label>
-                    <input type="text" id="student-name" required />
-                </div>
+         
 
-                <div class="form-group">
-                    <label for="student-id">رقم الهوية:</label>
-                    <input type="text" id="student-id" required />
-                    <div class="muted">يُقبل أرقام إنجليزية فقط (سيتم تحويل الأرقام العربية تلقائيًا).</div>
-                </div>
+             
             </div>
 
             <div class="form-group">
@@ -216,21 +181,7 @@
                     <option value="HR">موارد بشرية</option>
                     <!-- ممكن تضيف مواد أخرى -->
                 </select>
-            <div class="row">
-                <div class="form-group">
-                    <label for="level">المستوى:</label>
-                    <select id="level" required>
-                        <option value="">اختر المستوى</option>
-                        <option value="1">المستوى الأول</option>
-                        <option value="2">المستوى الثاني</option>
-                        <option value="3">المستوى الثالث</option>
-                        <option value="4">المستوى الرابع</option>
-                        <option value="5">المستوى الخامس</option>
-                        <option value="6">المستوى السادس</option>
-                        <option value="7">المستوى السابع</option>
-                        <option value="8">المستوى الثامن</option>
-                    </select>
-                </div>
+          
 
                 <div class="form-group">
                     <label for="course">الدورة:</label>
@@ -245,7 +196,7 @@
 
             <button type="submit">بدء الامتحان</button>
         </form>
-
+<!--
         <div class="card" style="margin-top:16px;">
             <h3 style="margin-bottom:8px;">شكل ملف Google Sheets لكل مادة</h3>
             <p class="muted">أنشئ ملف واحد فيه شيت لكل مادة (اسم الشيت = اسم المادة). الأعمدة يجب أن تكون بهذا الترتيب:</p>
@@ -272,7 +223,7 @@
             <p class="muted" style="margin-top:6px;">* ابدأ العد من 0 (يعني 0 = الاختيار الأول). أي صف سؤال فاضي سيتم تجاهله تلقائيًا.</p>
         </div>
     </div>
-
+-->
     <!-- Exam Section -->
     <!-- الامتحان -->
     <div class="card hidden" id="exam-section">
@@ -823,3 +774,4 @@ idInput.addEventListener('input', () => {
 
 </body>
 </html>
+
