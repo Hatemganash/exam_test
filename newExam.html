@@ -64,6 +64,7 @@
                     <label for="student-id">رقم الهوية:</label>
                     <input type="text" id="student-id" required />
                     <div class="muted">يُقبل أرقام إنجليزية فقط (سيتم تحويل الأرقام العربية تلقائيًا).</div>
+                    <div class="muted">يُقبل أرقام إنجليزية فقط.</div>
                 </div>
             </div>
 
@@ -96,7 +97,6 @@
 
             <button type="submit">بدء الامتحان</button>
         </form>
-
 <!--
         <div class="card" style="margin-top:16px;">
             <h3 style="margin-bottom:8px;">شكل ملف Google Sheets لكل مادة</h3>
@@ -124,7 +124,6 @@
             <p class="muted" style="margin-top:6px;">* ابدأ العد من 0 (يعني 0 = الاختيار الأول). أي صف سؤال فاضي سيتم تجاهله تلقائيًا.</p>
         </div>
     </div>
-
 -->
     <!-- الامتحان -->
     <div class="card hidden" id="exam-section">
@@ -444,7 +443,7 @@ document.getElementById('exam-form').addEventListener('submit', function(event) 
   gradeCurrentSubject();
   // ننتقل أو ننهي
   proceedToNextOrFinish();
-window.scrollTo({ top: 0, behavior: 'smooth' });
+//window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // زر “امتحان جديد”
@@ -466,4 +465,3 @@ idInput.addEventListener('input', () => {
 </script>
 </body>
 </html>
-
