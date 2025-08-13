@@ -96,7 +96,7 @@
 
             <button type="submit">بدء الامتحان</button>
         </form>
-
+<!--
         <div class="card" style="margin-top:16px;">
             <h3 style="margin-bottom:8px;">شكل ملف Google Sheets لكل مادة</h3>
             <p class="muted">أنشئ ملف واحد فيه شيت لكل مادة (اسم الشيت = اسم المادة). الأعمدة يجب أن تكون بهذا الترتيب:</p>
@@ -123,7 +123,7 @@
             <p class="muted" style="margin-top:6px;">* ابدأ العد من 0 (يعني 0 = الاختيار الأول). أي صف سؤال فاضي سيتم تجاهله تلقائيًا.</p>
         </div>
     </div>
-
+-->
     <!-- الامتحان -->
     <div class="card hidden" id="exam-section">
         <div class="flex-between">
@@ -442,6 +442,7 @@ document.getElementById('exam-form').addEventListener('submit', function(event) 
   gradeCurrentSubject();
   // ننتقل أو ننهي
   proceedToNextOrFinish();
+window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // زر “امتحان جديد”
@@ -463,3 +464,4 @@ idInput.addEventListener('input', () => {
 </script>
 </body>
 </html>
+
