@@ -270,22 +270,28 @@ async function loadSubjectQuestions(subject) {
 function renderQuestions() {
     console.log("Rendering questions:", currentQuestions);
     const container = document.getElementById('questions-container');
-    container.style.display = "block"; // لو كان مخفي
+    container.style.display = "block"; // في حالة كان مخفي
 
     container.innerHTML = '';
     currentQuestions.forEach((q, index) => {
-        let html = `<div style="margin-bottom:20px; border:1px solid #ccc; padding:10px;">
-                        <h3>${index + 1}. ${q.question}</h3>`;
-        q.options.forEach((opt, optIndex) => {
-            html += `<label>
+        const questionElement = document.createElement('div');
+        questionElement.classList.add('question'); // نفس الكلاس اللي كان في التصميم القديم
+
+        questionElement.innerHTML = `
+            <div class="question-text">${index + 1}. ${q.question}</div>
+            <div class="options">
+                ${q.options.map((opt, optIndex) => `
+                    <label class="option">
                         <input type="radio" name="q${index}" value="${optIndex}">
                         ${opt}
-                     </label><br>`;
-        });
-        html += `</div>`;
-        container.innerHTML += html;
+                    </label>
+                `).join('')}
+            </div>
+        `;
+        container.appendChild(questionElement);
     });
 }
+
 
 /* ===================== بدء مادة ===================== */
 async function startSubject() {
@@ -405,6 +411,7 @@ idInput.addEventListener('input', () => {
 
 </body>
 </html>
+
 
 
 
