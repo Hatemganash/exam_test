@@ -63,7 +63,7 @@
                 <div class="form-group">
                     <label for="student-id">رقم الهوية:</label>
                     <input type="text" id="student-id" required />
-                    <div class="muted">يُقبل أرقام فقط.</div>
+                    <div class="muted">يُقبل أرقام en فقط.</div>
                 </div>
             </div>
 
@@ -233,6 +233,7 @@ async function loadSubjectQuestions(subject) {
 
 /* ===================== عرض الأسئلة ===================== */
 function renderQuestions() {
+//     console.log("Rendering questions:", currentQuestions);
   const subject = subjects[currentSubjectIndex];
   document.getElementById('current-subject-name').textContent = subject.name;
   document.getElementById('subject-progress').textContent = `${currentSubjectIndex + 1}/${subjects.length}`;
@@ -263,7 +264,7 @@ function renderQuestions() {
   });
   const btn = document.getElementById('next-or-finish');
   btn.textContent = (currentSubjectIndex < subjects.length - 1) ? 'التالي' : 'إنهاء الامتحان';
-  window.scrollTo({ top: 0, behavior: 'smooth' }); // يرجع للأعلى بعد العرض
+//  window.scrollTo({ top: 0, behavior: 'smooth' }); // يرجع للأعلى بعد العرض
 }
 
 /* ===================== بدء مادة ===================== */
@@ -384,5 +385,6 @@ idInput.addEventListener('input', () => {
 
 </body>
 </html>
+
 
 
