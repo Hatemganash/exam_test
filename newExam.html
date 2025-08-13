@@ -63,7 +63,7 @@
                 <div class="form-group">
                     <label for="student-id">رقم الهوية:</label>
                     <input type="text" id="student-id" required />
-                    <div class="muted">يُقبل أرقام إنجليزية فقط.</div>
+                    <div class="muted">يُقبل أرقام فقط.</div>
                 </div>
             </div>
 
@@ -155,33 +155,13 @@
 </div>
 
 <script>
-/* ===================== إعداد الروابط والمواد لكل مستوى =====================
-
-ضع روابط CSV لكل مادة داخل كل مستوى. كل عنصر بالمصفوفة هو مادة واحدة:
-{name: "اسم المادة كما يظهر للطالب", url: "رابط CSV المنشور من Google Sheets"}
-
-مثال: المستوى 1 في دورة شبكات به 3 مواد.
-يمكنك تغيير أسماء المواد وعددها وروابطها بحرية.
-*/
+/* ===================== إعداد الروابط والمواد لكل مستوى ===================== */
 const sheetLinks = {
   networks: {
     1: [
       { name: "المستوي الاول شبكات", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=0&single=true&output=csv" },
       { name: "المستوي الاول انجليزي", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=1194456190&single=true&output=csv" },
-      { name: "أمن الشبكات", url: "" } // ضع الرابط المناسب أو اتركه فارغًا مؤقتًا
-    ],
-    2: [
-      { name: "موجهات ومبدلات", url: "" },
-      { name: "خدمات الشبكات", url: "" }
-    ]
-  },
-  HR: {
-    1: [
-      { name: "مبادئ الموارد البشرية", url: "" },
-      { name: "التوظيف والاختيار", url: "" }
-    ],
-    2: [
-      { name: "إدارة الأداء", url: "" }
+      { name: "أمن الشبكات", url: "" }
     ]
   }
 };
@@ -189,12 +169,9 @@ const sheetLinks = {
 /* ===================== أدوات مساعدة ===================== */
 function parseCSV(text) {
   const rows = [];
-  let currentRow = [];
-  let currentValue = '';
-  let insideQuotes = false;
+  let currentRow = [], currentValue = '', insideQuotes = false;
   for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const nextChar = text[i + 1];
+    const char = text[i], nextChar = text[i + 1];
     if (char === '"' && insideQuotes && nextChar === '"') { currentValue += '"'; i++; }
     else if (char === '"') { insideQuotes = !insideQuotes; }
     else if (char === ',' && !insideQuotes) { currentRow.push(currentValue.trim()); currentValue = ''; }
@@ -220,13 +197,11 @@ function isArabic(text) { return /[\u0600-\u06FF]/.test(text); }
 
 /* ===================== حالة التطبيق ===================== */
 let currentQuestions = [];
-let currentCourse = '';
-let currentLevel = '';
-let subjects = []; // [{name,url}, ...]
+let subjects = [];
 let currentSubjectIndex = 0;
-let subjectScores = []; // {name, correct, total, percentage}
+let subjectScores = [];
 
-/* ===================== تحميل أسئلة مادة واحدة ===================== */
+/* ===================== تحميل أسئلة مادة ===================== */
 async function loadSubjectQuestions(subject) {
   if (!subject?.url) {
     alert(`⚠ لا يوجد رابط لملف الأسئلة لمادة "${subject.name}".`);
@@ -240,15 +215,10 @@ async function loadSubjectQuestions(subject) {
     }
     const csvText = await response.text();
     let rows = parseCSV(csvText);
-    rows.shift(); // إزالة رأس الجدول
-
-    // تصفية الأسئلة الفارغة (نص السؤال)
+    rows.shift();
     rows = rows.filter(r => (r[0] && r[0].trim() !== ""));
-
-    // خلط واختيار 10 أسئلة على الأكثر
     shuffleArray(rows);
     rows = rows.slice(0, 10);
-
     return rows.map(row => ({
       question: row[0] || "",
       options: [row[1] || "", row[2] || "", row[3] || "", row[4] || ""],
@@ -261,66 +231,54 @@ async function loadSubjectQuestions(subject) {
   }
 }
 
-/* ===================== بناء واجهة الأسئلة ===================== */
+/* ===================== عرض الأسئلة ===================== */
 function renderQuestions() {
   const subject = subjects[currentSubjectIndex];
   document.getElementById('current-subject-name').textContent = subject.name;
   document.getElementById('subject-progress').textContent = `${currentSubjectIndex + 1}/${subjects.length}`;
-
   const container = document.getElementById('questions-container');
   container.innerHTML = '';
-
   currentQuestions.forEach((q, index) => {
     const questionDiv = document.createElement('div'); questionDiv.className = 'question';
-
     const questionText = document.createElement('div'); questionText.className = 'question-text';
     questionText.textContent = `${index + 1}. ${q.question}`;
     questionText.dir = isArabic(q.question) ? 'rtl' : 'ltr';
     questionDiv.appendChild(questionText);
-
     const optionsDiv = document.createElement('div'); optionsDiv.className = 'options';
     q.options.forEach((option, optIndex) => {
       const optionLabel = document.createElement('label'); optionLabel.className = 'option';
       optionLabel.setAttribute('dir', isArabic(option) ? 'rtl' : 'ltr');
-
       const radio = document.createElement('input');
       radio.type = 'radio'; radio.name = `question-${index}`; radio.value = optIndex;
       radio.addEventListener('change', () => {
         optionsDiv.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
         optionLabel.classList.add('selected');
       });
-
       optionLabel.appendChild(radio);
       optionLabel.append(` ${option}`);
       optionsDiv.appendChild(optionLabel);
     });
-
     questionDiv.appendChild(optionsDiv);
     container.appendChild(questionDiv);
   });
-
-  // زرار "التالي" أو "إنهاء الامتحان"
   const btn = document.getElementById('next-or-finish');
-  if (currentSubjectIndex < subjects.length - 1) {
-    btn.textContent = 'التالي';
-  } else {
-    btn.textContent = 'إنهاء الامتحان';
-  }
+  btn.textContent = (currentSubjectIndex < subjects.length - 1) ? 'التالي' : 'إنهاء الامتحان';
+  window.scrollTo({ top: 0, behavior: 'smooth' }); // يرجع للأعلى بعد العرض
 }
 
-/* ===================== بدء امتحان مادة ===================== */
+/* ===================== بدء مادة ===================== */
 async function startSubject() {
   const subject = subjects[currentSubjectIndex];
   currentQuestions = await loadSubjectQuestions(subject);
+  console.log("Loaded questions:", currentQuestions); // تتبع
   if (currentQuestions.length === 0) {
-    // لو مفيش أسئلة، نعتبر المادة صفر وننتقل
     subjectScores.push({ name: subject.name, correct: 0, total: 0, percentage: 0 });
     return proceedToNextOrFinish();
   }
   renderQuestions();
 }
 
-/* ===================== حساب نتيجة المادة الحالية ===================== */
+/* ===================== النتيجة ===================== */
 function gradeCurrentSubject() {
   let score = 0;
   const total = currentQuestions.length;
@@ -332,7 +290,6 @@ function gradeCurrentSubject() {
   subjectScores.push({ name: subjects[currentSubjectIndex].name, correct: score, total, percentage: percent });
 }
 
-/* ===================== التالي/الانتهاء ===================== */
 function proceedToNextOrFinish() {
   if (currentSubjectIndex < subjects.length - 1) {
     currentSubjectIndex++;
@@ -342,43 +299,22 @@ function proceedToNextOrFinish() {
   }
 }
 
-/* ===================== عرض النتيجة النهائية لكل مادة ===================== */
 function showFinalResults() {
   document.getElementById('exam-section').classList.add('hidden');
   const summaryDiv = document.getElementById('final-summary');
-
-  // جدول تفصيلي
   let tableHTML = `
     <table>
-      <thead>
-        <tr>
-          <th>المادة</th>
-          <th>الدرجة</th>
-          <th>النسبة %</th>
-        </tr>
-      </thead>
+      <thead><tr><th>المادة</th><th>الدرجة</th><th>النسبة %</th></tr></thead>
       <tbody>
-        ${subjectScores.map(s => `
-          <tr>
-            <td>${s.name}</td>
-            <td>${s.correct} / ${s.total}</td>
-            <td>${s.percentage}%</td>
-          </tr>
-        `).join('')}
+        ${subjectScores.map(s => `<tr><td>${s.name}</td><td>${s.correct} / ${s.total}</td><td>${s.percentage}%</td></tr>`).join('')}
       </tbody>
-    </table>
-  `;
+    </table>`;
   summaryDiv.innerHTML = tableHTML;
-
-  // إجمالي تقريبي (مجمّع)
   const totalCorrect = subjectScores.reduce((a,b)=>a+b.correct, 0);
   const totalQuestions = subjectScores.reduce((a,b)=>a+b.total, 0);
   const overallPercent = totalQuestions === 0 ? 0 : Math.round((totalCorrect / totalQuestions) * 100);
   document.getElementById('overall-score').textContent = `الإجمالي: ${totalCorrect} / ${totalQuestions} (${overallPercent}%)`;
-
   document.getElementById('results-section').classList.remove('hidden');
-
-  // عدّاد 10 ثواني للعودة للنموذج
   let seconds = 10;
   const countdownMessage = document.getElementById('countdown-message');
   countdownMessage.textContent = `سيتم العودة لنموذج التسجيل بعد ${seconds} ثوانٍ...`;
@@ -392,7 +328,6 @@ function showFinalResults() {
   }, 1000);
 }
 
-/* ===================== إعادة التعيين ===================== */
 function resetToRegistration() {
   document.getElementById('results-section').classList.add('hidden');
   document.getElementById('registration-form').classList.remove('hidden');
@@ -404,51 +339,36 @@ function resetToRegistration() {
   subjectScores = [];
 }
 
-/* ===================== أحداث الواجهة ===================== */
+/* ===================== أحداث ===================== */
 document.getElementById('student-form').addEventListener('submit', async function(event) {
   event.preventDefault();
-
   const studentName = document.getElementById('student-name').value.trim();
   const studentId = document.getElementById('student-id').value.trim();
   const level = document.getElementById('level').value;
   const course = document.getElementById('course').value;
-
   if (!sheetLinks[course] || !sheetLinks[course][level] || sheetLinks[course][level].length === 0) {
-    alert('⚠ لا توجد مواد محددة لهذا المستوى/الدورة. حدّد المواد وروابطها في الكود (sheetLinks).');
+    alert('⚠ لا توجد مواد محددة لهذا المستوى/الدورة.');
     return;
   }
-
-  currentCourse = course;
-  currentLevel = level;
-  subjects = sheetLinks[course][level].slice(); // نسخة من قائمة المواد
-
-  // عرض معلومات عامة
+  subjects = sheetLinks[course][level].slice();
   document.getElementById('exam-student-name').textContent = studentName;
   document.getElementById('exam-student-id').textContent = studentId;
   document.getElementById('current-level').textContent = level;
   document.getElementById('current-course').textContent = document.querySelector(`#course option[value="${course}"]`).textContent;
-
-  // إظهار الامتحان وبدء أول مادة
   document.getElementById('registration-form').classList.add('hidden');
   document.getElementById('exam-section').classList.remove('hidden');
-
   await startSubject();
 });
 
-// زر التالي/إنهاء (نفس الفورم submit)
 document.getElementById('exam-form').addEventListener('submit', function(event) {
   event.preventDefault();
-  // نحسب نتيجة المادة الحالية
   gradeCurrentSubject();
-  // ننتقل أو ننهي
   proceedToNextOrFinish();
-//window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// زر “امتحان جديد”
 document.getElementById('new-exam').addEventListener('click', resetToRegistration);
 
-/* ===================== إجبار رقم الهوية على أرقام إنجليزية ===================== */
+/* ===================== أرقام إنجليزية فقط ===================== */
 const arabicToEnglishDigitsMap = {'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
 const idInput = document.getElementById('student-id');
 idInput.addEventListener('input', () => {
@@ -456,12 +376,13 @@ idInput.addEventListener('input', () => {
   let newValue = '';
   for (let ch of value) {
     if (arabicToEnglishDigitsMap[ch]) newValue += arabicToEnglishDigitsMap[ch];
-    else if (/[0-9]/.test(ch)) newValue += ch; // يقبل أرقام إنجليزية فقط
-    // يتجاهل أي شيء غير رقم
+    else if (/[0-9]/.test(ch)) newValue += ch;
   }
   if (newValue !== value) idInput.value = newValue;
 });
 </script>
+
 </body>
 </html>
+
 
