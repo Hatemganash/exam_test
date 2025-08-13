@@ -63,7 +63,7 @@
                 <div class="form-group">
                     <label for="student-id">رقم الهوية:</label>
                     <input type="text" id="student-id" required />
-                    <div class="muted">يُقبل أرقام en فقط.</div>
+                    <div class="muted">يُقبل أرقام فقط.</div>
                 </div>
             </div>
 
@@ -232,7 +232,7 @@ async function loadSubjectQuestions(subject) {
 }
 
 /* ===================== عرض الأسئلة ===================== */
-function renderQuestions() {
+/*function renderQuestions() {
 //     console.log("Rendering questions:", currentQuestions);
   const subject = subjects[currentSubjectIndex];
   document.getElementById('current-subject-name').textContent = subject.name;
@@ -265,6 +265,29 @@ function renderQuestions() {
   const btn = document.getElementById('next-or-finish');
   btn.textContent = (currentSubjectIndex < subjects.length - 1) ? 'التالي' : 'إنهاء الامتحان';
 //  window.scrollTo({ top: 0, behavior: 'smooth' }); // يرجع للأعلى بعد العرض
+}
+*/
+    function renderQuestions() {
+    console.log("Rendering questions:", currentQuestions);
+    const container = document.getElementById('questions-container');
+    if (!container) {
+        console.error("questions-container not found!");
+        return;
+    }
+    container.innerHTML = '';
+    currentQuestions.forEach((q, index) => {
+        const questionElement = document.createElement('div');
+        questionElement.innerHTML = `<h3>${q.question}</h3>`;
+        q.options.forEach((opt, optIndex) => {
+            questionElement.innerHTML += `
+                <label>
+                    <input type="radio" name="q${index}" value="${optIndex}">
+                    ${opt}
+                </label><br>
+            `;
+        });
+        container.appendChild(questionElement);
+    });
 }
 
 /* ===================== بدء مادة ===================== */
@@ -385,6 +408,7 @@ idInput.addEventListener('input', () => {
 
 </body>
 </html>
+
 
 
 
