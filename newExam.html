@@ -267,10 +267,12 @@ async function loadSubjectQuestions(subject) {
 //  window.scrollTo({ top: 0, behavior: 'smooth' }); // يرجع للأعلى بعد العرض
 }
 */
-   function renderQuestions() {
+function renderQuestions() {
     console.log("Rendering questions:", currentQuestions);
-    document.body.innerHTML += "<hr><h2>الأسئلة:</h2>"; // للتجربة
+    const container = document.getElementById('questions-container');
+    container.style.display = "block"; // لو كان مخفي
 
+    container.innerHTML = '';
     currentQuestions.forEach((q, index) => {
         let html = `<div style="margin-bottom:20px; border:1px solid #ccc; padding:10px;">
                         <h3>${index + 1}. ${q.question}</h3>`;
@@ -281,7 +283,7 @@ async function loadSubjectQuestions(subject) {
                      </label><br>`;
         });
         html += `</div>`;
-        document.body.innerHTML += html;
+        container.innerHTML += html;
     });
 }
 
@@ -403,6 +405,7 @@ idInput.addEventListener('input', () => {
 
 </body>
 </html>
+
 
 
 
