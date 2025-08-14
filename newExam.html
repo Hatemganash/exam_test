@@ -61,7 +61,7 @@ th{ background-color: #f2f2f2;}
         <div class="form-group">
             <label for="student-id">رقم الهوية:</label>
             <input type="text" id="student-id" required />
-            <div class="muted">يُقبل أرقام  (سيتم تحويل الأرقام العربية تلقائيًا).</div>
+            <div class="muted">يُقبل أرقام انجليزيه فقط.</div>
         </div>
         <div class="form-group">
             <label for="level">المستوى:</label>
@@ -114,8 +114,15 @@ th{ background-color: #f2f2f2;}
 /* روابط الشيت لكل مستوى ودورة */
 const sheetLinks = {
   networks:{
-    1:[ {name:"شبكات المستوى 1", url:"https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=0&single=true&output=csv"}],
-    2:[ {name:"شبكات المستوى 2", url:""} ]
+     1: [
+      { name: "شبكات الحاسب", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=0&single=true&output=csv" },
+      { name: "بروتوكولات الاتصال", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlYWXFAEHFiFx11wVOJ3GcacAoAdkpRu_E5QXzMGRLKIDeJ2bQ7Ftbt9JDJC6ymiORK_wGrrXmrAMZ/pub?gid=1194456190&single=true&output=csv" },
+      { name: "أمن الشبكات", url: "" } // ضع الرابط المناسب أو اتركه فارغًا مؤقتًا
+    ],
+    2: [
+      { name: "موجهات ومبدلات", url: "" },
+      { name: "خدمات الشبكات", url: "" }
+    ]
   },
   HR:{
     1:[ {name:"الموارد البشرية 1", url:""}]
@@ -265,3 +272,4 @@ idInput.addEventListener('input',()=>{ let val=idInput.value,newVal=''; for(let 
 </script>
 </body>
 </html>
+
