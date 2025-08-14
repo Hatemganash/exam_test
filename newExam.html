@@ -195,7 +195,7 @@ function renderQuestions(){
   });
  document.getElementById('next-or-finish').textContent = currentSubjectIndex < subjects.length-1 ? 'التالي' : 'إنهاء الامتحان';
 //document.getElementById('questions-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    window.scrollTo({ top: document.getElementById('questions-container').offsetTop - 50, behavior: 'smooth' });
+    window.scrollTo({ top: document.getElementById('questions-container').offsetTop - 100, behavior: 'smooth' });
 
 
 }
@@ -284,6 +284,7 @@ idInput.addEventListener('input',()=>{ let val=idInput.value,newVal=''; for(let 
 </script>
 </body>
 </html>
+
 
 
 
