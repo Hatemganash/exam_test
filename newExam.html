@@ -99,8 +99,11 @@ th{ background-color: #f2f2f2;}
 </div>
 
 <!-- النتيجة النهائية -->
+<!-- النتيجة النهائية -->
 <div class="card result-card hidden" id="results-section">
     <h2>نتيجة الامتحانات لكل مادة</h2>
+    <!-- إضافة اسم الطالب ورقم الهوية -->
+    <p>الطالب: <span id="result-student-name"></span> (<span id="result-student-id"></span>)</p>
     <div id="final-summary"></div>
     <div class="score" id="overall-score"></div>
     <p id="countdown-message" class="muted"></p>
@@ -108,6 +111,7 @@ th{ background-color: #f2f2f2;}
         <button id="new-exam">امتحان جديد</button>
     </div>
 </div>
+
 </div>
 
 <script>
@@ -226,6 +230,10 @@ function showFinalResults(){
   const totalCorrect=subjectScores.reduce((a,b)=>a+b.correct,0);
   const totalQuestions=subjectScores.reduce((a,b)=>a+b.total,0);
   const overall=Math.round(totalQuestions?totalCorrect/totalQuestions*100:0);
+    // عرض اسم الطالب ورقم الهوية في صفحة النتيجة
+document.getElementById('result-student-name').textContent = document.getElementById('exam-student-name').textContent;
+document.getElementById('result-student-id').textContent = document.getElementById('exam-student-id').textContent;
+
   document.getElementById('overall-score').textContent=`الإجمالي: ${totalCorrect}/${totalQuestions} (${overall}%)`;
   document.getElementById('results-section').classList.remove('hidden');
   let sec=10;
@@ -272,5 +280,6 @@ idInput.addEventListener('input',()=>{ let val=idInput.value,newVal=''; for(let 
 </script>
 </body>
 </html>
+
 
 
