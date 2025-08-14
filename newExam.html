@@ -226,6 +226,7 @@ function gradeCurrentSubject(){
 function proceedToNextOrFinish(){
   if(currentSubjectIndex<subjects.length-1){ currentSubjectIndex++; startSubject(); }
   else{ showFinalResults(); }
+    finishExam()
 }
 
 /* النتيجة النهائية */
@@ -278,7 +279,41 @@ document.getElementById('student-form').addEventListener('submit', async e=>{
   document.getElementById('exam-section').classList.remove('hidden');
   await startSubject();
 });
+// حفظ البيانات في الشيت 
+function finishExam() {
+  const studentName = document.getElementById("student-name").value;
+  const studentId = document.getElementById("student-id").value;
+  const studentLevel = "Level " + document.getElementById("level").value; // مثال: Level 1
 
+  // هنا لازم تجيب الدرجات الفعلية من الامتحانات
+  // مثال ثابت للتجربة:
+  const scoresObj = {
+    "شبكات الحاسب": 8,
+    "بروتوكولات الاتصال": 7,
+    "أمن الشبكات": 9
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbzgB0BvaT2s4MbXvmIwBeqSuPrMWgU8slzZyp7ujG69y9Bt7vLiVbPc4ZbXSkwibSR3yg/exec", {
+    method: "POST",
+    body: JSON.stringify({
+      name: studentName,
+      id: studentId,
+      level: studentLevel,
+      scores: scoresObj
+    })
+  })
+  .then(res => res.text())
+  .then(data => {
+    console.log("تم إرسال البيانات:", data);
+    alert("تم حفظ نتيجتك بنجاح");
+  })
+  .catch(err => {
+    console.error("خطأ في الإرسال:", err);
+    alert("حدث خطأ أثناء حفظ البيانات");
+  });
+}
+
+    
 document.getElementById('exam-form').addEventListener('submit', e=>{ e.preventDefault(); gradeCurrentSubject(); proceedToNextOrFinish(); });
 document.getElementById('new-exam').addEventListener('click', resetToRegistration);
 
@@ -289,6 +324,7 @@ idInput.addEventListener('input',()=>{ let val=idInput.value,newVal=''; for(let 
 </script>
 </body>
 </html>
+
 
 
 
