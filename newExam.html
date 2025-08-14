@@ -193,7 +193,9 @@ function renderQuestions(){
     });
     div.appendChild(opts); container.appendChild(div);
   });
-  document.getElementById('next-or-finish').textContent=currentSubjectIndex<subjects.length-1?'التالي':'إنهاء الامتحان';
+ document.getElementById('next-or-finish').textContent = currentSubjectIndex < subjects.length-1 ? 'التالي' : 'إنهاء الامتحان';
+document.getElementById('questions-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
 }
 
 /* بدء المادة */
@@ -280,6 +282,7 @@ idInput.addEventListener('input',()=>{ let val=idInput.value,newVal=''; for(let 
 </script>
 </body>
 </html>
+
 
 
 
